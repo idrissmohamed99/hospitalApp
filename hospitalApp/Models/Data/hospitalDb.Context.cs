@@ -27,5 +27,12 @@ namespace hospitalApp.Models.Data
     
         public virtual DbSet<doctor> doctors { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
+        public virtual DbSet<CheckUp> CheckUps { get; set; }
+
+        public System.Data.Entity.DbSet<hospitalApp.Models.ViewModels.CheckUpViewModel> CheckUpViewModels { get; set; }
+
+        public System.Data.Entity.DbSet<hospitalApp.Models.ViewModels.InsertCheckViewModel> InsertCheckViewModels { get; set; }
+
+        public System.Data.Entity.DbSet<hospitalApp.Models.ViewModels.UpdateCheckUpViewModel> UpdateCheckUpViewModels { get; set; }
     }
 }

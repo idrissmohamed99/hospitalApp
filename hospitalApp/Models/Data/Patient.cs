@@ -14,14 +14,24 @@ namespace hospitalApp.Models.Data
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
 
+
     public partial class Patient
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Patient()
+        {
+            this.CheckUps = new HashSet<CheckUp>();
+        }
+    
         public int id { get; set; }
         [DisplayName("«·«”„ ")]
-        [Required(ErrorMessage ="Â–« «·Õﬁ· «Ã»«—Ì")]
+        [Required(ErrorMessage = "Â–« «·Õﬁ· «Ã»«—Ì")]
         public string name { get; set; }
         [DisplayName("«·⁄„— ")]
-        [Required (ErrorMessage ="Â–« «·Õﬁ «Ã»«—Ì")]
+        [Required(ErrorMessage = "Â–« «·Õﬁ «Ã»«—Ì")]
         public string age { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckUp> CheckUps { get; set; }
     }
 }

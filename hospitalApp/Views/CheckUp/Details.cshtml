@@ -1,0 +1,52 @@
+﻿
+@model hospitalApp.Models.ViewModels.CheckUpViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div>
+    <h4>doctor</h4>
+    <hr />
+    <dl class="dl-horizontal pull-right" >
+        <dt>
+            @Html.DisplayName("اسم الطبيب")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.doctorName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Patientname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Patientname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CheckType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CheckType)
+
+
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateAt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateAt)
+
+
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("تعديل", "UpdateCheckUp", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "GetChecksUp")
+</p>
+

@@ -4,7 +4,17 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="hospiitalDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="hospiitalDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CheckUp">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CheckType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DoctorId" Type="int" Nullable="false" />
+          <Property Name="PatientId" Type="int" Nullable="false" />
+          <Property Name="CreateAt" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="doctor">
           <Key>
             <PropertyRef Name="id" />
@@ -21,12 +31,44 @@
           <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="age" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <Association Name="FK_CheckUp_doctor">
+          <End Role="doctor" Type="Self.doctor" Multiplicity="1" />
+          <End Role="CheckUp" Type="Self.CheckUp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctor">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CheckUp">
+              <PropertyRef Name="DoctorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CheckUp_Patient">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+          <End Role="CheckUp" Type="Self.CheckUp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CheckUp">
+              <PropertyRef Name="PatientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="hospiitalDbModelStoreContainer">
+          <EntitySet Name="CheckUp" EntityType="Self.CheckUp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="doctor" EntityType="Self.doctor" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CheckUp_doctor" Association="Self.FK_CheckUp_doctor">
+            <End Role="doctor" EntitySet="doctor" />
+            <End Role="CheckUp" EntitySet="CheckUp" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CheckUp_Patient" Association="Self.FK_CheckUp_Patient">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="CheckUp" EntitySet="CheckUp" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="hospiitalDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -37,6 +79,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="doctorName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="speclisht" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CheckUps" Relationship="hospiitalDbModel.FK_CheckUp_doctor" FromRole="doctor" ToRole="CheckUp" />
         </EntityType>
         <EntityType Name="Patient">
           <Key>
@@ -45,11 +88,57 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="age" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CheckUps" Relationship="hospiitalDbModel.FK_CheckUp_Patient" FromRole="Patient" ToRole="CheckUp" />
         </EntityType>
         <EntityContainer Name="hospiitalDbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="doctors" EntityType="Self.doctor" />
           <EntitySet Name="Patients" EntityType="Self.Patient" />
+          <EntitySet Name="CheckUps" EntityType="hospiitalDbModel.CheckUp" />
+          <AssociationSet Name="FK_CheckUp_doctor" Association="hospiitalDbModel.FK_CheckUp_doctor">
+            <End Role="doctor" EntitySet="doctors" />
+            <End Role="CheckUp" EntitySet="CheckUps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CheckUp_Patient" Association="hospiitalDbModel.FK_CheckUp_Patient">
+            <End Role="Patient" EntitySet="Patients" />
+            <End Role="CheckUp" EntitySet="CheckUps" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="CheckUp">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CheckType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DoctorId" Type="Int32" Nullable="false" />
+          <Property Name="PatientId" Type="Int32" Nullable="false" />
+          <Property Name="CreateAt" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="doctor" Relationship="hospiitalDbModel.FK_CheckUp_doctor" FromRole="CheckUp" ToRole="doctor" />
+          <NavigationProperty Name="Patient" Relationship="hospiitalDbModel.FK_CheckUp_Patient" FromRole="CheckUp" ToRole="Patient" />
+        </EntityType>
+        <Association Name="FK_CheckUp_doctor">
+          <End Type="hospiitalDbModel.doctor" Role="doctor" Multiplicity="1" />
+          <End Type="hospiitalDbModel.CheckUp" Role="CheckUp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctor">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CheckUp">
+              <PropertyRef Name="DoctorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CheckUp_Patient">
+          <End Type="hospiitalDbModel.Patient" Role="Patient" Multiplicity="1" />
+          <End Type="hospiitalDbModel.CheckUp" Role="CheckUp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CheckUp">
+              <PropertyRef Name="PatientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -71,6 +160,17 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="age" ColumnName="age" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CheckUps">
+            <EntityTypeMapping TypeName="hospiitalDbModel.CheckUp">
+              <MappingFragment StoreEntitySet="CheckUp">
+                <ScalarProperty Name="CreateAt" ColumnName="CreateAt" />
+                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
+                <ScalarProperty Name="DoctorId" ColumnName="DoctorId" />
+                <ScalarProperty Name="CheckType" ColumnName="CheckType" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

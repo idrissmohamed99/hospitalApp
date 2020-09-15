@@ -1,0 +1,86 @@
+﻿@using PagedList.Mvc
+@using PagedList
+@{
+    ViewBag.Title = "GetChecksUp";
+}
+
+@model IPagedList<hospitalApp.Models.ViewModels.CheckUpViewModel>
+@Html.ActionLink("اضافة كشف", "InsertCheckUp", null, new { @class = " btn btn-info " })
+
+<br />
+<br />
+<br />
+<br />
+
+<div class="pull-left">
+    @using (Html.BeginForm("GetChecksUp", "CheckUp", FormMethod.Get))
+    {
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-push-10 " style="direction:rtl">
+
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "inputss form-control" })
+                </div>
+                <br />
+                <div class="col-md-push-10">
+                    <input type="submit" value="بحث بالكلمات المفتاحية" class="btn btn-info btn-def  btn-sm form-control" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<table class="table  table-responsive table-bordered info  text-center" dir="rtl">
+    <tr class="alert-info">
+        <th>
+            @Html.DisplayName("اسم الطبيب")
+        </th>
+        <th>
+            @Html.DisplayName("اسم المريض")
+        </th>
+        <th>
+            @Html.DisplayName("نوع الكشف")
+        </th>
+        <th>
+            @Html.DisplayName("تاريخ الكشف")
+        </th>
+        <th>
+            @Html.DisplayName(" اجراءت")
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.doctorName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patientname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CheckType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateAt)
+            </td>
+            <td>
+                @Html.ActionLink("تعديل", "UpdateCheckUp", new { id = item.id }) |
+                @Html.ActionLink("تفاصيل", "Details", new { id = item.id }) |
+                @Html.ActionLink("حدف", "Delete", new { id = item.id })
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+<div class="justify-content-center ">
+
+
+    صفحة @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) من @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("GetChecksUp",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+
+</div>
+@Html.ActionLink("Back to List", "GetChecksUp")

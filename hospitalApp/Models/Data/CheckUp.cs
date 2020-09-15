@@ -11,20 +11,17 @@ namespace hospitalApp.Models.Data
 {
     using System;
     using System.Collections.Generic;
-    
-    public partial class doctor
+    using System.ComponentModel.DataAnnotations;
+
+    public partial class CheckUp
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public doctor()
-        {
-            this.CheckUps = new HashSet<CheckUp>();
-        }
-    
         public int id { get; set; }
-        public string doctorName { get; set; }
-        public int speclisht { get; set; }
+        public string CheckType { get; set; }
+        public int DoctorId { get; set; }
+        public int PatientId { get; set; }
+        public System.DateTime CreateAt { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CheckUp> CheckUps { get; set; }
+        public virtual doctor doctor { get; set; }
+        public virtual Patient Patient { get; set; }
     }
 }
