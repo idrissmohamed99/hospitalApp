@@ -2,8 +2,7 @@
 @using PagedList
 
 
-
-@model IEnumerable<hospitalApp.Models.Data.doctor>
+@model IPagedList<hospitalApp.Models.Data.doctor>
 
 @{
     ViewBag.Title = "قائمة الأطباء";
@@ -15,13 +14,36 @@
     @Html.ActionLink("اضافة طبيب", "Create", null, new { @class = " btn btn-info " })
 
 </p>
+
+<div class="pull-left">
+    @using (Html.BeginForm("GetDoctors", "Doctor", FormMethod.Get))
+    {
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-push-10 " style="direction:rtl">
+
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "inputss form-control" })
+                </div>
+                <br />
+                <div class="col-md-push-10">
+                    <input type="submit" value="بحث بالكلمات المفتاحية" class="btn btn-info btn-def  btn-sm form-control" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+
 <table class="table  table-responsive alert-success ">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.doctorName)
+            @Html.DisplayName("اسم الطبيب")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.speclisht)
+            @Html.DisplayName("التخصص")
         </th>
         <th></th>
     </tr>
@@ -44,3 +66,14 @@
     }
 
 </table>
+
+
+<div class="justify-content-center ">
+
+
+    صفحة @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) من @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("GetDoctors",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+
+</div>

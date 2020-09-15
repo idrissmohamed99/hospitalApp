@@ -17,11 +17,11 @@ namespace hospitalApp.Controllers
         hospiitalDbEntities db = new hospiitalDbEntities();
 
         [HttpGet]
-        public ActionResult GetDoctors()
+        public ActionResult GetDoctors(string sortOrder, string currentFilter, string searchString, int? page)
+        {
 
 
-
-               ViewBag.CurrentSort = sortOrder;
+            ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             if (searchString != null)
@@ -32,48 +32,30 @@ namespace hospitalApp.Controllers
             {
                 searchString = currentFilter;
             }
-ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentFilter = searchString;
 
 
-            IQueryable<CheckUp> Checks = db.CheckUps;
+            IQueryable<doctor> doctors = db.doctors;
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                Checks = Checks.Where(s => s.doctor.doctorName.Contains(searchString)
-          || s.Patient.name.Contains(searchString) || s.CheckType.Contains(searchString) || s.CreateAt.ToString().Contains(searchString));
+                doctors = doctors.Where(s => s.doctorName.Contains(searchString));
             }
 
-            var viewModels = new List<CheckUpViewModel>();
-
-            if (Checks != null)
-            {
 
 
 
 
-                foreach (var item in Checks)
-                {
-                    var viewModel = new CheckUpViewModel();
 
-viewModel.id = item.id;
-                    viewModel.doctorName = item.doctor.doctorName;
-                    viewModel.Patientname = item.Patient.name;
-                    viewModel.CreateAt = item.CreateAt;
-                    viewModel.CheckType = item.CheckType;
-                    viewModels.Add(viewModel);
-
-                }
-            }
-
-            if (page.HasValue && page< 1)
+            if (page.HasValue && page < 1)
             {
                 return null;
             }
             // retrieve list from database/wherever9
-            var listUnpaged = viewModels.ToList();
-// page the list
-const int pageSize = 10;
-var listPaged = listUnpaged.ToPagedList(page ?? 1, pageSize);
+            var listUnpaged = doctors.ToList();
+            // page the list
+            const int pageSize = 10;
+            var listPaged = listUnpaged.ToPagedList(page ?? 1, pageSize);
             // return a 404 if user browses to pages beyond last page. special case first page if no items exist
             if (listPaged.PageNumber != 1 && page.HasValue && page > listPaged.PageCount)
             {
@@ -81,32 +63,7 @@ var listPaged = listUnpaged.ToPagedList(page ?? 1, pageSize);
             }
 
             return View(listPaged);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        {
-            return View(db.doctors.ToList());
-
+ 
         }
         /////Get action for insert Doctor
 
@@ -178,7 +135,7 @@ var listPaged = listUnpaged.ToPagedList(page ?? 1, pageSize);
             return View(db.doctors.Find(id));
         }
         [HttpPost]
-        public ActionResult Delete( doctor doctor)
+        public ActionResult Delete(doctor doctor)
         {
             var isExisit = db.doctors.Find(doctor.id);
             if (isExisit != null)
@@ -191,8 +148,17 @@ var listPaged = listUnpaged.ToPagedList(page ?? 1, pageSize);
             return View();
         }
 
+
+
     }
 
+
+
+
+
+
 }
+
+
 
 
